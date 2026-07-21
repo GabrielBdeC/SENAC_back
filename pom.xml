@@ -30,15 +30,34 @@
 		<java.version>25</java.version>
 	</properties>
 	<dependencies>
+		<!-- Habilita o Spring MVC: permite criar controllers com @RestController,
+		     mapear URLs com @GetMapping, e converter objetos em JSON automaticamente. -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webmvc</artifactId>
 		</dependency>
 
+		<!-- Dependências de teste: só disponíveis ao rodar mvn test, não no executável final. -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webmvc-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+
+		<!-- Habilita o JdbcTemplate: a ferramenta que o Repository usa para executar SQL.
+		     Também configura automaticamente o pool de conexões com o banco. -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jdbc</artifactId>
+		</dependency>
+
+		<!-- Driver MySQL: traduz as chamadas Java para o protocolo que o MySQL entende.
+		     scope=runtime significa que não é necessário para compilar o código,
+		     apenas para executar — por isso não aparece nos imports. -->
+		<dependency>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
 
