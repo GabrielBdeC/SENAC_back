@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -30,19 +31,28 @@ public class ProdutoController {
     }
 
     // POST /produtos — cria um novo produto.
-    // @RequestBody: o Spring lê o JSON do corpo da requisição e monta um objeto Produto.
-    // Exemplo de corpo: {"nome":"Tiramisu","preco":18.50,"categoria":"Sobremesa"}
+    // ResponseEntity permite montar a resposta na mão: o status HTTP e o corpo.
     @PostMapping
-    public void criar(@RequestBody Produto p) {
-        service.criar(p);
+    public ResponseEntity<String> criar(@RequestBody Produto p) {
+        // try: tenta criar; se o service lançar throw, cai no catch
+        try {
+            service.criar(p);
+            return ResponseEntity.ok("Produto salvo");
+        } catch (IllegalArgumentException e) {
+            // badRequest() = 400; e.getMessage() traz a mensagem do throw
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     // PUT /produtos/{id} — atualiza um produto inteiro pelo id.
-    // @PathVariable: pega o {id} da URL e injeta na variável local id.
-    // Exemplo: PUT /produtos/abc-123 com o JSON novo no corpo.
     @PutMapping("/{id}")
-    public void atualizar(@PathVariable String id, @RequestBody Produto p) {
-        service.atualizar(id, p);
+    public ResponseEntity<String> atualizar(@PathVariable String id, @RequestBody Produto p) {
+        try {
+            service.atualizar(id, p);
+            return ResponseEntity.ok("Produto atualizado");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     // DELETE /produtos/{id} — remove o produto com o id informado.

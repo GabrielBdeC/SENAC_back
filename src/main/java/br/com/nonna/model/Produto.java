@@ -26,7 +26,7 @@ public class Produto {
     public String getNome() { return nome; }
     public void setNome(String nome) { this.nome = nome; }
 
-    public String getPreco() { return preco.toString(); }
+    public String getPreco() { return preco != null ? preco.toString() : null; }
     public void setPreco(BigDecimal preco) { this.preco = preco; }
 
     public String getCategoria() { return categoria; }
