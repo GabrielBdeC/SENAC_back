@@ -6,39 +6,51 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-// REPOSITORY — única camada que conhece o banco de dados.
-// Todo o SQL fica aqui. Service e Controller não sabem que existe SQL;
-// eles apenas pedem uma List<Produto> e recebem de volta.
-// Se um dia trocarmos MySQL por outro banco, só este arquivo muda.
 @Repository
 public class ProdutoRepository {
 
-    // JdbcTemplate é a ferramenta do Spring para executar SQL.
-    // O Spring cria e gerencia a conexão automaticamente com base
-    // nas configurações do application.properties.
     private final JdbcTemplate jdbcTemplate;
 
-    // Injeção de dependência via construtor: o Spring vê que o construtor
-    // precisa de um JdbcTemplate, cria um e entrega aqui.
-    // Não precisamos chamar "new JdbcTemplate()" em nenhum lugar.
     public ProdutoRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    // Executa um SELECT e transforma cada linha do resultado em um objeto Produto.
     public List<Produto> buscarTodos() {
         return jdbcTemplate.query(
-            // O SQL que será enviado ao MySQL.
             "SELECT id, nome, preco, categoria FROM produto",
-
-            // RowMapper: uma função (lambda) chamada uma vez para cada linha.
-            // rs  = ResultSet — representa a linha atual da tabela.
-            // linha = número da linha (raramente usado, mas obrigatório na assinatura).
             (rs, linha) -> new Produto(
-                rs.getString("id"),        // lê a coluna "id" como String
-                rs.getString("nome"),       // lê a coluna "nome" como String
-                rs.getBigDecimal("preco"),  // lê "preco" como BigDecimal (exato)
-                rs.getString("categoria")   // lê "categoria" como String
+                rs.getString("id"),
+                rs.getString("nome"),
+                rs.getBigDecimal("preco"),
+                rs.getString("categoria")
             ));
+    }
+
+    // jdbc.update executa comandos que mudam o banco: INSERT, UPDATE, DELETE.
+    // Os ? são substituídos pelos argumentos na ordem — nunca concatene texto
+    // direto no SQL, pois isso abre brecha para SQL Injection.
+    // O id NÃO é passado no INSERT: o MySQL gera o UUID automaticamente.
+    public void inserir(Produto p) {
+        jdbcTemplate.update(
+            "INSERT INTO produto (nome, preco, categoria) VALUES (?, ?, ?)",
+            p.getNome(), p.getPreco(), p.getCategoria()
+        );
+    }
+
+    // O WHERE garante que só o produto certo é alterado.
+    // Sem ele, o UPDATE mudaria a tabela inteira.
+    public void atualizar(String id, Produto p) {
+        jdbcTemplate.update(
+            "UPDATE produto SET nome = ?, preco = ?, categoria = ? WHERE id = ?",
+            p.getNome(), p.getPreco(), p.getCategoria(), id
+        );
+    }
+
+    // O WHERE é indispensável: sem ele, o DELETE apaga a tabela inteira.
+    public void deletar(String id) {
+        jdbcTemplate.update(
+            "DELETE FROM produto WHERE id = ?",
+            id
+        );
     }
 }
