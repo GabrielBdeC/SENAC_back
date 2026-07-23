@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.http.ResponseEntity;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -30,29 +30,31 @@ public class ProdutoController {
         return service.listar();
     }
 
-    // POST /produtos — cria um novo produto.
-    // ResponseEntity permite montar a resposta na mão: o status HTTP e o corpo.
+    // --- PARTE 1: try/catch manual ---
+    // Com @Valid o Spring valida antes de entrar no método;
+    // o ValidacaoHandler trata o erro — sem try/catch aqui.
+    //
+    // @PostMapping
+    // public ResponseEntity<String> criar(@RequestBody Produto p) {
+    //     try {
+    //         service.criar(p);
+    //         return ResponseEntity.ok("Produto salvo");
+    //     } catch (IllegalArgumentException e) {
+    //         return ResponseEntity.badRequest().body(e.getMessage());
+    //     }
+    // }
+
+    // POST /produtos — @Valid dispara as anotações do modelo antes de entrar no método.
+    // Dado inválido nem chega no service: o ValidacaoHandler devolve o 400.
     @PostMapping
-    public ResponseEntity<String> criar(@RequestBody Produto p) {
-        // try: tenta criar; se o service lançar throw, cai no catch
-        try {
-            service.criar(p);
-            return ResponseEntity.ok("Produto salvo");
-        } catch (IllegalArgumentException e) {
-            // badRequest() = 400; e.getMessage() traz a mensagem do throw
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public void criar(@Valid @RequestBody Produto p) {
+        service.criar(p);
     }
 
-    // PUT /produtos/{id} — atualiza um produto inteiro pelo id.
+    // PUT /produtos/{id} — @Valid também vale na atualização: toda entrada de dados valida.
     @PutMapping("/{id}")
-    public ResponseEntity<String> atualizar(@PathVariable String id, @RequestBody Produto p) {
-        try {
-            service.atualizar(id, p);
-            return ResponseEntity.ok("Produto atualizado");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public void atualizar(@PathVariable String id, @Valid @RequestBody Produto p) {
+        service.atualizar(id, p);
     }
 
     // DELETE /produtos/{id} — remove o produto com o id informado.

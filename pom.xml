@@ -59,6 +59,13 @@
 			<artifactId>mysql-connector-j</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+
+		<!-- Habilita as anotações de validação: @NotBlank, @Positive, @Valid etc.
+		     Sem esta dependência as anotações existem mas não fazem nada. -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>

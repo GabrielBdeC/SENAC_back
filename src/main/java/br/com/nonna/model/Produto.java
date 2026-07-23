@@ -1,12 +1,25 @@
 package br.com.nonna.model;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
 import java.math.BigDecimal;
 
 public class Produto {
 
     private String id;
+
+    // @NotBlank: texto não pode ser vazio ("") nem só espaços ("   ")
+    @NotBlank(message = "O nome é obrigatório")
     private String nome;
+
+    // @NotNull: o campo tem que vir no JSON
+    // @Positive: o número tem que ser maior que zero
+    @NotNull
+    @Positive(message = "O preço deve ser maior que zero")
     private BigDecimal preco;
+
     private String categoria;
 
     // Construtor vazio: o Jackson precisa dele para desserializar o JSON
