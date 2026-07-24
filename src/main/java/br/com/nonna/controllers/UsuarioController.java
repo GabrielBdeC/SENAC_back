@@ -1,7 +1,11 @@
 package br.com.nonna.controllers;
 
-import br.com.nonna.model.Usuario;
+import br.com.nonna.dto.CadastroUsuario;
+import br.com.nonna.dto.UsuarioResposta;
 import br.com.nonna.service.UsuarioService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,11 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-// ATENÇÃO — este controller tem três problemas intencionais (didáticos):
-//   1. Senha em texto puro no banco.
-//   2. Senha retornada na resposta JSON.
-//   3. Sem controle de acesso: qualquer pessoa cadastra e lista usuários.
-// Esses problemas têm solução e serão corrigidos em aulas futuras.
+// O controller nunca recebe nem devolve a entidade Usuario — só DTOs.
 @RestController
 @RequestMapping("/usuarios")
 @CrossOrigin
@@ -28,25 +28,25 @@ public class UsuarioController {
         this.service = service;
     }
 
-    // GET /usuarios — lista todos os usuários cadastrados.
     @GetMapping
-    public List<Usuario> listar() {
+    public List<UsuarioResposta> listar() {
         return service.listar();
     }
 
-    // GET /usuarios/por-email?email=ana@cantina.com
-    // @RequestParam lê o valor que vem depois da interrogação na URL.
-    // É a peça central do login: encontrar o usuário pelo que ele digitou.
     @GetMapping("/por-email")
-    public Usuario porEmail(@RequestParam String email) {
+    public UsuarioResposta porEmail(@RequestParam String email) {
         return service.buscarPorEmail(email);
     }
 
-    // POST /usuarios — cadastra um novo administrador.
-    // Se o e-mail já existir, o UNIQUE da tabela barra e o Spring devolve 500.
-    // Em produção esse erro seria tratado com uma mensagem amigável.
-    @PostMapping
-    public void criar(@RequestBody Usuario u) {
-        service.criar(u);
+    // @Valid: dispara a validação do record antes de entrar no método.
+    // ResponseEntity permite escolher o status: 201 Created, não o 200 genérico.
+    @PostMapping("/cadastro")
+    public ResponseEntity<UsuarioResposta> cadastrar(
+            @Valid @RequestBody CadastroUsuario dados) {
+        UsuarioResposta criado = service.cadastrar(dados);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(criado);
+
     }
 }

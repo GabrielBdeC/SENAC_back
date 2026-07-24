@@ -14,10 +14,7 @@ import java.util.Map;
 @RestControllerAdvice
 public class ValidacaoHandler {
 
-    // Captura a exceção que o @Valid lança quando a validação falha.
-    // @ResponseStatus(BAD_REQUEST) devolve 400 automaticamente.
-    // O mapa campo → mensagem é o que o front recebe para mostrar em cada input:
-    // { "nome": "O nome é obrigatório", "preco": "O preço deve ser maior que zero" }
+    // Erros de validação (@Valid): devolve 400 com mapa campo → mensagem.
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> tratar(MethodArgumentNotValidException e) {
@@ -26,4 +23,14 @@ public class ValidacaoHandler {
             erros.put(f.getField(), f.getDefaultMessage()));
         return erros;
     }
+
+    // E-mail duplicado: 409 Conflict com a mensagem do service — não o texto cru do MySQL.
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public Map<String, String> tratar(IllegalArgumentException e) {
+        Map<String, String> erro = new HashMap<>();
+        erro.put("mensagem", e.getMessage());
+        return erro;
+    }
 }
+

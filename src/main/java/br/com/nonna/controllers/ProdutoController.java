@@ -30,22 +30,8 @@ public class ProdutoController {
         return service.listar();
     }
 
-    // --- PARTE 1: try/catch manual ---
-    // Com @Valid o Spring valida antes de entrar no método;
-    // o ValidacaoHandler trata o erro — sem try/catch aqui.
-    //
-    // @PostMapping
-    // public ResponseEntity<String> criar(@RequestBody Produto p) {
-    //     try {
-    //         service.criar(p);
-    //         return ResponseEntity.ok("Produto salvo");
-    //     } catch (IllegalArgumentException e) {
-    //         return ResponseEntity.badRequest().body(e.getMessage());
-    //     }
-    // }
-
-    // POST /produtos — @Valid dispara as anotações do modelo antes de entrar no método.
-    // Dado inválido nem chega no service: o ValidacaoHandler devolve o 400.
+    // @Valid dispara as anotações do modelo antes de entrar no método.
+    // Dado inválido nem chega no service: o ValidacaoHandler devolve 400.
     @PostMapping
     public void criar(@Valid @RequestBody Produto p) {
         service.criar(p);
@@ -57,8 +43,7 @@ public class ProdutoController {
         service.atualizar(id, p);
     }
 
-    // DELETE /produtos/{id} — remove o produto com o id informado.
-    // Não precisa de corpo: só o id na URL já basta para saber quem apagar.
+    // DELETE /produtos/{id} — só o id na URL basta, sem corpo na requisição.
     @DeleteMapping("/{id}")
     public void deletar(@PathVariable String id) {
         service.deletar(id);

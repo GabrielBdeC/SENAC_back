@@ -4,30 +4,24 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.UUID;
 
-// Reserva representa uma linha da tabela reserva.
-// Cada campo corresponde a uma coluna — mesmos tipos, mesmos nomes (em camelCase).
+// Espelho da tabela reserva — cada campo corresponde a uma coluna.
 public class Reserva {
 
-    // UUID: tipo do Java para o identificador de 36 caracteres.
-    // O valor é criado pela aplicação antes do INSERT, então
-    // uma reserva nunca existe sem id.
+    // UUID: identificador de 36 caracteres gerado pela aplicação antes do INSERT.
     private UUID id;
 
     private String nome;
     private String telefone;
 
-    // LocalDate e LocalTime: os tipos modernos do Java para data e hora.
-    // Combinam diretamente com DATE e TIME do MySQL.
+    // LocalDate e LocalTime: tipos do Java para DATE e TIME do MySQL.
     private LocalDate data;
     private LocalTime hora;
 
     private Integer pessoas;
 
-    // observacao pode ser null: o campo é opcional na tabela.
+    // observacao pode ser null — campo opcional na tabela.
     private String observacao;
 
-    // Construtor vazio: necessário para o Jackson montar o objeto
-    // a partir do JSON que chega no @RequestBody.
     public Reserva() {}
 
     public UUID getId() { return id; }

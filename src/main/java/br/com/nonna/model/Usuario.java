@@ -1,16 +1,15 @@
 package br.com.nonna.model;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
-// Usuario representa um administrador do restaurante.
-// ATENÇÃO — três problemas intencionais para fins didáticos:
-//   1. A senha é armazenada em texto puro (nunca faça isso em produção).
-//   2. A senha sai na resposta JSON (o campo deve ser omitido na resposta).
-//   3. Não há controle de permissão (qualquer um cadastra e lista usuários).
-// Esses pontos têm solução — eles serão corrigidos em aulas futuras.
+// Usuario é a entidade: espelho fiel da tabela usuario no banco.
+// Ela não conversa diretamente com o mundo externo — para isso existem os DTOs.
 public class Usuario {
 
-    private String id;
+    // UUID: mesmo tipo usado na tabela (CHAR 36).
+    // O valor é gerado pelo UsuarioConversor antes do INSERT.
+    private UUID id;
     private String nome;
     private String email;
     private String senha;
@@ -21,8 +20,8 @@ public class Usuario {
 
     public Usuario() {}
 
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
+    public UUID getId() { return id; }
+    public void setId(UUID id) { this.id = id; }
 
     public String getNome() { return nome; }
     public void setNome(String nome) { this.nome = nome; }
