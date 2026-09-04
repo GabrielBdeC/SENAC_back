@@ -1,10 +1,10 @@
-package br.com.nonna;
+package br.com.nonna_back;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class NonnaApplicationTests {
+class NonnaBackApplicationTests {
 
 	@Test
 	void contextLoads() {
