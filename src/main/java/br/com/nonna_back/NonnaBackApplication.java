@@ -1,12 +1,13 @@
-package br.com.nonna;
+package br.com.nonna_back;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class NonnaApplication {
+public class NonnaBackApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(NonnaApplication.class, args);
+		SpringApplication.run(NonnaBackApplication.class, args);
 	}
+
 }
