@@ -26,4 +26,11 @@ public class ProdutoRepository {
                 )
         );
     }
+
+    public void criarProduto(Produto produto) {
+        jdbcTemplate.update(
+                "INSERT INTO produto (nome, descricao, preco, categoria) VALUES (?, ?, ?, ?)",
+                produto.getNome(), produto.getDescricao(), produto.getPreco(), produto.getCategoria()
+        );
+    }
 }
